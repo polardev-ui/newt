@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newt Search - {{ query }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --accent: #38bdf8;
+            --text: #f1f5f9;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px 10%;
+            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+        }
+
+        /* --- Animations --- */
+        @keyframes reveal {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .search-item {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            transition: transform 0.3s ease, border 0.3s ease;
+            
+            /* The Magic: Blur-in, Fade-in, Slide-up */
+            opacity: 0;
+            animation: reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .search-item:hover {
+            transform: translateX(10px);
+            border: 1px solid var(--accent);
+        }
+
+        .search-item a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .search-item p {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .url {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Staggered Delay for the first 10 results */
+        .search-item:nth-child(1) { animation-delay: 0.1s; }
+        .search-item:nth-child(2) { animation-delay: 0.2s; }
+        .search-item:nth-child(3) { animation-delay: 0.3s; }
+        .search-item:nth-child(4) { animation-delay: 0.4s; }
+        .search-item:nth-child(5) { animation-delay: 0.5s; }
+        .search-item:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="/" style="text-decoration:none; color:inherit;"><h1>Newt Search</h1></a>
+        <div class="status-pill">{{ status }}</div>
+        <p>Showing results for: <strong>{{ query }}</strong></p>
+    </div>
+
+    <div class="results-container">
+        {% if results %}
+            {% for result in results %}
+            <div class="search-item">
+                <span class="url">{{ result.url }}</span>
+                <a href="{{ result.url }}" target="_blank">{{ result.title }}</a>
+                <p>{{ result.snippet }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="search-item" style="text-align:center;">
+                <p>Newt's memory is blank for this topic. Refresh in a few seconds while I crawl the web for you!</p>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

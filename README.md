@@ -8,4 +8,6 @@ An open source minimal web browser, built for a safer, cleaner, and faster exper
 
 Newt was primarily built only for the use of the [CustomNewTab](https://github.com/polardev-ui/newtab) extension, built by me.
 
-Newt is **currently** powered by SearXNG. This is not permanent, and will change in the future.
+Newt is **currently** powered by Serper, a popular search tool developed by SearXNG.
+
+Beta is now available.

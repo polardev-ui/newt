@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Newt Search</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .result { margin-bottom: 30px; }
+        .result a { font-size: 1.2rem; color: #1a0dab; text-decoration: none; }
+        .result p { color: #4d5156; }
+        input { width: 70%; padding: 10px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>🦎 Newt Search</h1>
+    <form action="/search" method="get">
+        <input type="text" name="q" placeholder="Search the independent web..." value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
+    <hr>
+    {% if results %}
+        {% for res in results %}
+            <div class="result">
+                <a href="{{ res.url }}">{{ res.title }}</a>
+                <p>{{ res.text[:200] }}...</p>
+            </div>
+        {% endfor %}
+    {% elif query %}
+        <p>No results found for "{{ query }}".</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,7 @@
+services:
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=f902efedd38ff4aedf68517b71cde57df9e9299a # Change this later
