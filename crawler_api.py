@@ -5,16 +5,13 @@ from whoosh.index import open_dir
 import os
 import ssl
 
-# CONFIG
 SERPER_API_KEY = "02796c9f21aeb091c97a96d4a2c1f680956aa2ac"
 INDEX_DIR = "newt_index"
 
 async def scout_and_index(query):
-    # --- SSL FIX: Create a context that skips certificate verification ---
     ssl_context = ssl.create_default_context()
     ssl_context.check_hostname = False
     ssl_context.verify_mode = ssl.CERT_NONE
-    # --------------------------------------------------------------------
 
     payload = [{"q": query, "num": 10}]
     headers = {
@@ -22,7 +19,6 @@ async def scout_and_index(query):
         'Content-Type': 'application/json'
     }
     
-    # We pass the custom ssl_context to the TCPConnector
     connector = aiohttp.TCPConnector(ssl=ssl_context)
     
     async with aiohttp.ClientSession(headers=headers, connector=connector) as session:
@@ -34,17 +30,14 @@ async def scout_and_index(query):
 
                 for target_url in urls:
                     try:
-                        # Visiting each page with the same SSL-skipping session
                         async with session.get(target_url, timeout=10) as page_resp:
                             html = await page_resp.text()
                             soup = BeautifulSoup(html, 'lxml')
                             
-                            # Clean the text
                             for s in soup(["script", "style", "nav", "footer"]): s.decompose()
                             content = soup.get_text(separator=' ', strip=True)[:20000]
                             title = soup.title.string if soup.title else target_url
                             
-                            # Save to your Search Engine
                             if not os.path.exists(INDEX_DIR):
                                 print(f"⚠️ Index directory {INDEX_DIR} not found!")
                                 continue

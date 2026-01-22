@@ -8,7 +8,6 @@ async def search(q: str):
     with open('newt_index.json', 'r') as f:
         data = json.load(f)
     
-    # Simple keyword matching
     results = []
     for url, content in data.items():
         if q.lower() in content['text'].lower() or q.lower() in content['title'].lower():

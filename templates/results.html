@@ -1,127 +1,330 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newt Search - {{ query }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>{{ query }} - Newt Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0f172a;
-            --glass: rgba(255, 255, 255, 0.03);
-            --accent: #38bdf8;
-            --text: #f1f5f9;
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 40px 10%;
-            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+            background: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            padding: 0;
+            min-height: 100vh;
         }
 
-        /* --- Animations --- */
-        @keyframes reveal {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-                filter: blur(10px);
-            }
-            100% {
+        a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* Header with search bar */
+        .header {
+            background: #0a0a0a;
+            border-bottom: 1px solid #1a1a1a;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .logo-link:hover {
+            opacity: 0.8;
+        }
+
+        .logo-small {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #fff 0%, #999 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .search-form {
+            flex: 1;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 120px 12px 20px;
+            border-radius: 50px;
+            border: 2px solid #222;
+            background: #111;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #333;
+            background: #151515;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 9px 24px;
+            border-radius: 50px;
+            border: none;
+            background: #fff;
+            color: #000;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        .search-button:active {
+            transform: translateY(-50%) scale(0.98);
+        }
+
+        /* Results container */
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 30px 80px;
+        }
+
+        .results-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            padding-left: 5px;
+        }
+
+        /* Individual result */
+        .result {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInResult 0.4s ease forwards;
+            transition: all 0.3s ease;
+        }
+
+        .result:hover {
+            background: #111;
+            border-color: #252525;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .result:nth-child(1) { animation-delay: 0.05s; }
+        .result:nth-child(2) { animation-delay: 0.1s; }
+        .result:nth-child(3) { animation-delay: 0.15s; }
+        .result:nth-child(4) { animation-delay: 0.2s; }
+        .result:nth-child(5) { animation-delay: 0.25s; }
+        .result:nth-child(6) { animation-delay: 0.3s; }
+        .result:nth-child(7) { animation-delay: 0.35s; }
+        .result:nth-child(8) { animation-delay: 0.4s; }
+        .result:nth-child(9) { animation-delay: 0.45s; }
+        .result:nth-child(10) { animation-delay: 0.5s; }
+
+        @keyframes fadeInResult {
+            to {
                 opacity: 1;
                 transform: translateY(0);
-                filter: blur(0);
             }
         }
 
-        .header {
-            margin-bottom: 50px;
-        }
-
-        .status-pill {
-            display: inline-block;
-            padding: 5px 15px;
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-
-        .search-item {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 16px;
-            transition: transform 0.3s ease, border 0.3s ease;
-            
-            /* The Magic: Blur-in, Fade-in, Slide-up */
-            opacity: 0;
-            animation: reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        .search-item:hover {
-            transform: translateX(10px);
-            border: 1px solid var(--accent);
-        }
-
-        .search-item a {
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-
-        .search-item p {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-top: 10px;
-        }
-
-        .url {
+        .result-url {
             font-size: 0.85rem;
-            color: #64748b;
-            display: block;
-            margin-bottom: 5px;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Staggered Delay for the first 10 results */
-        .search-item:nth-child(1) { animation-delay: 0.1s; }
-        .search-item:nth-child(2) { animation-delay: 0.2s; }
-        .search-item:nth-child(3) { animation-delay: 0.3s; }
-        .search-item:nth-child(4) { animation-delay: 0.4s; }
-        .search-item:nth-child(5) { animation-delay: 0.5s; }
-        .search-item:nth-child(6) { animation-delay: 0.6s; }
+        .favicon {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .favicon-fallback {
+            font-size: 0.9rem;
+        }
+
+        .result-title {
+            margin: 0 0 10px 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #fff;
+            transition: color 0.2s ease;
+        }
+
+        .result-link:hover .result-title {
+            color: #ccc;
+        }
+
+        .result-snippet {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #aaa;
+        }
+
+        /* No results state */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .no-results-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .no-results-subtext {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 60px;
+            padding: 30px;
+            font-size: 0.85rem;
+            color: #555;
+            text-align: center;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+                padding: 0 20px;
+            }
+            
+            .search-form {
+                order: 3;
+                width: 100%;
+                margin-top: 12px;
+            }
+            
+            .results-container {
+                padding: 20px 15px 60px;
+            }
+            
+            .result {
+                padding: 16px;
+            }
+            
+            .result-title {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="/" style="text-decoration:none; color:inherit;"><h1>Newt Search</h1></a>
-        <div class="status-pill">{{ status }}</div>
-        <p>Showing results for: <strong>{{ query }}</strong></p>
+<div class="header">
+    <div class="header-content">
+        <a href="/" class="logo-link">
+            <div class="logo-small">N</div>
+            <span class="logo-text">Newt</span>
+        </a>
+        
+        <form action="/search" method="get" class="search-form">
+            <input type="text" name="q" value="{{ query }}" class="search-input" autofocus autocomplete="off">
+            <button type="submit" class="search-button">Search</button>
+        </form>
     </div>
+</div>
 
-    <div class="results-container">
-        {% if results %}
-            {% for result in results %}
-            <div class="search-item">
-                <span class="url">{{ result.url }}</span>
-                <a href="{{ result.url }}" target="_blank">{{ result.title }}</a>
-                <p>{{ result.snippet }}</p>
+<div class="results-container">
+    {% if results %}
+        <div class="results-info">
+            Showing results for "{{ query }}"
+        </div>
+        
+        {% for res in results %}
+            <div class="result">
+                <div class="result-url">
+                    <img src="https://www.google.com/s2/favicons?domain={{ res.url }}&sz=32" 
+                         alt="" 
+                         class="favicon" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="favicon-fallback" style="display:none;">🌐</span>
+                    {{ res.url }}
+                </div>
+                <a href="{{ res.url }}" target="_blank" class="result-link">
+                    <h3 class="result-title">{{ res.title }}</h3>
+                </a>
+                <p class="result-snippet">{{ res.snippet }}</p>
             </div>
-            {% endfor %}
-        {% else %}
-            <div class="search-item" style="text-align:center;">
-                <p>Newt's memory is blank for this topic. Refresh in a few seconds while I crawl the web for you!</p>
-            </div>
-        {% endif %}
-    </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <div class="no-results-text">No results found</div>
+            <div class="no-results-subtext">The crawler is still exploring the web. Try again in a moment! 🌍</div>
+        </div>
+    {% endif %}
+</div>
+
+<footer>
+    Made by Josh Clark with ❤️ | Currently in open beta
+</footer>
 
 </body>
 </html>
